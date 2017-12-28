@@ -1,4 +1,4 @@
-# vuecomponents
+# vuec
 
 > vuec组件库开发
 
