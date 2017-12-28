@@ -1,6 +1,6 @@
 # vuec
 
-> vuec组件库开发
+> 基于Vue.js2.0+的组件库
 
 ## Build Setup
 
