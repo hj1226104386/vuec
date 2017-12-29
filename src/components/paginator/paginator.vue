@@ -12,37 +12,26 @@
           @click="currentPage++ && goto(currentPage++)"><a href="javascript:;">下一页</a></li>
       <li class='edge-page' @click="goto(totalPage)"><a href="javascript:;">尾页</a></li>
     </ul>
-    <!--loading-->
-    <v-loading v-show='ifShowLoading'></v-loading>
   </div>
 </template>
 
 <script>
   export default {
     name: 'paginator',
-    props: ['ajaxData', 'pageSize', 'totalPages'],
+    props: ['pageSize', 'totalPage', 'test'],
     data () {
       return {
         currentPage: 1,
-        showItem: 7,
-        totalPage: 1, // ajax获取
-        ifShowLoading: false
+        showItem: 7
       }
     },
-    watch: {
-      // 监控从父组件传来的搜索参数和请求接口
-      ajaxData: {
-        handler: function (newV, oldV) {
-//          console.log('参数变动了')
-          // 默认还是第一页
-          this.currentPage = 1
-          this.ajax(newV)
-        },
-        deep: true
-      },
-      // 监听从父组件传来的总页数，这是默认的，后面需要通过ajax去请求来获取 -师资列表
-      totalPages: function () {
-        this.totalPage = this.totalPages || 1
+    mounted: function () {
+      console.log(this.test)
+    },
+    methods: {
+      goto: function (index) {
+        if (index === this.currentPage) return false
+        this.currentPage = index
       }
     },
     computed: {
@@ -67,30 +56,6 @@
         }
         return pageArr
       }
-    },
-    methods: {
-      goto: function (index) {
-        if (index === this.currentPage) return false
-        this.currentPage = index
-        // TODO:这里发送ajax请求
-        this.ajax(this.ajaxData)
-      },
-      ajax: function (data) {
-        var that = this
-        // 显示loading
-//        that.ifShowLoading = true
-        var url = data.ajaxUrl
-        var params = data.params
-        var otherParams = this.$common.calcParams()
-        var pageParams = {page: this.currentPage, pageSize: this.pageSize}
-        var totalParams = Object.assign(otherParams, params, pageParams)
-        this.$http.post(url, totalParams, {emulateJSON: true}).then(function (res) {
-          // 保存查询到的表格数据
-          that.$store.commit('setTableData', res.body.data || [])
-          that.totalPage = res.body.totalPage
-//          that.ifShowLoading = false
-        })
-      }
     }
   }
 </script>
@@ -98,7 +63,6 @@
 
 <style scoped lang='scss'>
   .paginator {
-    padding: .29rem 0 .27rem;
     text-align: center;
   }
 
@@ -106,19 +70,19 @@
     position: relative;
     li {
       display: inline-block;
-      margin: 0 .071rem;
-      line-height: .34rem;
-      width: .34rem;
-      height: .34rem;
-      border: .01rem solid #E4E4E4;
+      margin: 0 7px;
+      line-height: 34px;
+      width: 34px;
+      height: 34px;
+      border: 1px solid #E4E4E4;
       background-color: rgba(32, 53, 128, 0.01);
       a {
         display: inline-block;
         font-family: PingFangSC-Regular;
-        font-size: .14rem;
+        font-size: 14px;
         color: #354052;
         letter-spacing: 0;
-        line-height: .21rem;
+        line-height: 21px;
         background-color: rgba(32, 53, 128, 0.01);
       }
       &.active {
@@ -132,12 +96,12 @@
         }
       }
       &.edge-page {
-        width: .54rem;
-        height: .34rem;
+        width: 54px;
+        height: 34px;
       }
       &.page-turning {
-        width: .85rem;
-        height: .34rem;
+        width: 85px;
+        height: 34px;
       }
     }
   }
